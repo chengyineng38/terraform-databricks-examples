@@ -35,9 +35,13 @@ You can customize this project by modifying the `terraform.tfvars` file that def
 * `user_names` - List of users to create in the specified group
 * `tags` - Additional tags applied to all resources created
 
+Note: Any of the customizations you do to the repo, once submitted as a PR, will trigger the build pipeline. 
+
 ## Configuring Azure DevOps pipelines
 
-As described above, we need two pipelines:
+First of all, you need to create a fork of this repository. 
+
+Then, we will create two pipelines as depicted in the overview diagram above. 
 
 * The build pipeline is responsible for validation of changes in pull requests.
 * The release pipeline is responsible for deploying the changes.
@@ -45,9 +49,16 @@ As described above, we need two pipelines:
 We also need to define auxiliary objects in the Azure DevOps project that will be used by the both pipelines:
 
 * Azure Data Lake Storage (ADLS) account and container that will be used to store Terraform state.
-* Service connection for Github that will be used to detect the changes in the repository (not necessary if you use Azure DevOps Repos).
+  * If you do not have an ADLS account, you can create your own storage acocunt by following [the steps here](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal). 
+  * This will be your `BACKEND_SA_NAME` later. 
+  * Navigate to `Containers` underneath the `Data storage` tab. 
+    * Here, you will find the list of containers within your storage account. You can choose to create new containers if you would like. 
+    * The value in the `Name` column for your container will be your `BACKEND_CONTAINER_NAME`. 
+* Service connection for Github that will be used to detect the changes in the repository (not necessary if you use Azure DevOps Repos)
+    * If you receive this error as shown in the screenshot, you need to [create a new service connection with GitHub](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#github-service-connection) using Personal Access Token (PAT). 
 * [Service connection for Azure Resource Manager](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#azure-resource-manager-service-connection) that will be used to access data of Terraform state in Azure Data Lake Storage (ADLS) container via [azure remote backend](https://www.terraform.io/language/settings/backends/azurerm).  The configured identity needs to have write access to the configured ADLS container.
 * [Azure DevOps variable group](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups) will store all variables used by the both pipelines.
+  * Refer to the section below on how to configure variable groups. 
 
 ### Configuring the variable group
 

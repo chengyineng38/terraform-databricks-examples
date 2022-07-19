@@ -1,7 +1,7 @@
-cluster_name = "Common Cluster"
-department   = "Data Analytics"
-user_names   = ["user1@example.com", "user2@example.com"]
-group_name   = "Data engineering"
+cluster_name = "chengyin 11.0 ML"
+department   = "Field Eng"
+user_names   = ["chengyin.eng@databricks.com"]
+group_name   = "Data Science"
 tags = {
   "Project" = "New project"
 }
